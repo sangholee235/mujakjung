@@ -1,34 +1,30 @@
-import { useState } from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import Page1 from "./pages/Page1";
-import Page2 from "./pages/Page2";
-import Page3 from "./pages/Page3";
-import PostList from "./pages/PostList";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Provider } from "react-redux";
 
-function Navigation() {
-  const navigate = useNavigate();
-  return (
-    <div style={{ marginBottom: 20 }}>
-      <button onClick={() => navigate("/page1")}>Page 1</button>
-      <button onClick={() => navigate("/page2")}>Page 2</button>
-      <button onClick={() => navigate("/page3")}>Page 3</button>
-    </div>
-  );
-}
+import PostList from "./pages/Posts";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import CreatePost from "./pages/CreatePost";
+
+import { store } from "./app/store";
+
+const queryClient = new QueryClient();
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <BrowserRouter>
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<Page1 />} />
-        <Route path="/page2" element={<Page2 />} />
-        <Route path="/page3" element={<Page3 />} />
-        <Route path="/postlist" element={<PostList />}></Route>
-      </Routes>
-    </BrowserRouter>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<PostList />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/createpost" element={<CreatePost />} />
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </Provider>
   );
 }
 
