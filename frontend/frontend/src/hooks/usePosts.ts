@@ -1,3 +1,5 @@
+// src/hooks/usePosts.ts
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchPosts, createPost, deletePost } from "../api/postApi";
 import type { Post } from "../types/post";
