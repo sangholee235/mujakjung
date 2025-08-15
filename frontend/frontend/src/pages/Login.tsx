@@ -1,35 +1,29 @@
-// src/pages/Login.tsx
 import React, { useState } from "react";
-import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { useLogin } from "../hooks/useUsers"; // 훅 가져오기
+import type { LoginRequest } from "../types/userApi";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigator = useNavigate();
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const loginMutation = useLogin();
+
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      // 1. 로그인 요청 (세션 생성)
-      await api.post("/users/login", { username, password });
 
-      // 2. 세션 기반 현재 유저 정보 가져오기
-      const res = await api.get("/users/me");
-      const user = res.data; // {id, username, nickname}
+    const data: LoginRequest = { username, password };
 
-      console.log("로그인 성공:", user);
-
-      // 3. 로컬스토리지에 저장
-      localStorage.setItem("user", JSON.stringify(user));
-
-      alert("로그인 성공!");
-
-      navigator("/");
-    } catch (err) {
-      alert("로그인 실패");
-      console.error(err);
-    }
+    loginMutation.mutate(data, {
+      onSuccess: (user) => {
+        alert("로그인 성공!");
+        navigator("/"); // 홈으로 이동
+      },
+      onError: () => {
+        alert("로그인 실패");
+      },
+    });
   };
 
   return (
@@ -39,12 +33,14 @@ export default function Login() {
         className="bg-white p-8 rounded shadow-md w-full max-w-sm"
       >
         <h1 className="text-2xl font-bold mb-6 text-center">로그인</h1>
+
         <input
           placeholder="아이디"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
+
         <input
           placeholder="비밀번호"
           type="password"
@@ -53,11 +49,13 @@ export default function Login() {
           autoComplete="current-password"
           className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
+
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
+          disabled={loginMutation.isPending} // 진행 중 비활성화
         >
-          로그인
+          {loginMutation.isPending ? "로그인 중..." : "로그인"}
         </button>
       </form>
     </div>
