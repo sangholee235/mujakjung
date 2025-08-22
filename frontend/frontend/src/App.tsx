@@ -6,6 +6,7 @@ import PostList from "./pages/Posts";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import CreatePost from "./pages/CreatePost";
+import PostDetail from "./pages/PostDetail";
 
 import { store } from "./app/store";
 
@@ -18,6 +19,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<PostList />} />
+            <Route path="/posts/:id" element={<PostDetail />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/createpost" element={<CreatePost />} />

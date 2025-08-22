@@ -1,6 +1,6 @@
-// src/components/PostItem.tsx
 import type { Post } from "../types/post";
 import { useDeletePost } from "../hooks/usePosts";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   post: Post;
@@ -8,6 +8,7 @@ type Props = {
 
 export default function PostItem({ post }: Props) {
   const deleteMutation = useDeletePost();
+  const navigate = useNavigate();
 
   // localStorage에서 로그인한 사용자 정보 가져오기
   const storedUser = localStorage.getItem("user");
@@ -26,7 +27,14 @@ export default function PostItem({ post }: Props) {
 
   return (
     <li className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-      <h2 className="text-xl font-semibold text-blue-600 mb-2">{post.title}</h2>
+      {/* 제목 클릭 시 상세 페이지로 이동 */}
+      <h2
+        onClick={() => navigate(`/posts/${post.id}`)}
+        className="text-xl font-semibold text-blue-600 mb-2 cursor-pointer hover:underline"
+      >
+        {post.title}
+      </h2>
+
       <p className="text-gray-700 mb-4 whitespace-pre-wrap">{post.content}</p>
       <small className="text-gray-400 block mb-3">
         {post.authorNickname} | {new Date(post.createdAt).toLocaleString()}
@@ -37,7 +45,7 @@ export default function PostItem({ post }: Props) {
         <button
           onClick={handleDelete}
           className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
-          disabled={deleteMutation.isPending} // 삭제 진행 중이면 비활성화
+          disabled={deleteMutation.isPending}
         >
           {deleteMutation.isPending ? "삭제 중..." : "삭제"}
         </button>
