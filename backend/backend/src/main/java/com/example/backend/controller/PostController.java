@@ -57,7 +57,7 @@ public class PostController {
         Post saved = postRepository.save(post);
         return PostResponse.from(saved);
     }
-
+    
     // 글 삭제
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id, HttpSession session) {
